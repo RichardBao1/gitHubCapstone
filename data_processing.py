@@ -1,5 +1,6 @@
 import sqlite3
 from flask import g
+import os
 
 DATABASE = 'login.db'
 
@@ -15,28 +16,71 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+def establishConnection(func):
+    def connection(*args, **kwargs):
+        conn = sqlite3.connect(DATABASE)
+        try:
+            cur = conn.cursor()
+            rv = func(cur, *args, **kwargs)
+        except Exception as e:
+            conn.rollback()
+            raise e
+        else:
+            if rv == None: #if you don't return anything i.e. not a select
+                conn.commit()
+        finally:
+            conn.close()
+
+        if rv != None:
+            return rv
+    return connection
+
+@establishConnection
 def createTable():
-    conn = sqlite3.connect('login.db')
-    cur = conn.cursor()
     cur.execute('''CREATE TABLE user
                 (id INTEGER not null primary key autoincrement,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 phone TEXT NOT NULL UNIQUE)''')
-    conn.commit()
-    conn.close()
+    #id INTEGER not null primary key autoincrement
+    #could just be id INTEGER primary key - as integer primary keys default autoincrement
+    #when null value is passed in autoincrement, id value is one larger then
+    #previous largest value to exist in that column
 
-def addUser(username, password, email, phone):
-    query_db("INSERT INTO user (username, password, email, phone) VALUES (?, ?, ?, ?)",
-             (username, password, email, phone))
+@establishConnection
+def getData(cur, userId):
+    cur.execute("SELECT * FROM user WHERE id=?", (userId,))
+    return cur.fetchall()
 
-def checkPassword(username, password):
-    conn = sqlite3.connect('login.db')
-    cur = conn.cursor()
+@establishConnection
+def addUser(cur, username, password, email, phone):
+    cur.execute("INSERT INTO user (username, password, email, phone) VALUES (?, ?, ?, ?)",
+                (username, password, email, phone))
 
-    conn.commit()
-    conn.close()
+@establishConnection
+def deleteUser(cur, userId):
+    cur.execute("DELETE FROM user WHERE id =?", (userId,))
 
 
-addUser('johnJones', 'password2', 'iio@gmail.com', 'oipu')
+@establishConnection
+def updatePassword(cur, userId, newPassword):
+    cur.execute("UPDATE user SET password=? WHERE id=?", (newPassword, userId))
+
+@establishConnection
+def getUserId(cur, username):
+    cur.execute("SELECT id FROM user WHERE username=?", (username,))
+    return cur.fetchone()[0]
+
+@establishConnection
+def checkPassword(cur, username, password):
+    try:
+        cur.execute("SELECT password FROM user WHERE username=?", (username,))
+        if cur.fetchone()[0]== password:
+            return True
+        else:
+            return False
+    except:
+        return False
+
+
