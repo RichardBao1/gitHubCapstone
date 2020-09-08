@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+
+:root{
+  --navbarheadersize: 30px;
+
+  --primary: rgb(39, 54, 74);
+
+  --primary-font: 'Rubik';
+  --secondary-font: 'Rubik';
+
+}
+
+.header-size{
+  font-size: var(--navbarheadersize);
+}
+
+.logo-size{
+  height: var(--navbarheadersize);
+}
+
+.navbar{
+  background-image: linear-gradient(180deg, lightgray, white) ;
+  border-bottom: 1px black solid;
+}
+
+.float-right{
+  float: right;
+  padding-right: 10px;
+}
+
+body{
+  font: 15px/1.5 var(--secondary-font), Arial, sans-serif;
+  padding:0;
+  margin:0;
+  background-color: white;
+}
+
+table{
+  text-align:center;
+}
+
+
+.container{
+  text-align: center;
+}
+
+.error{
+  padding-bottom: 20px;
+}

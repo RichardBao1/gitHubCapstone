@@ -1,0 +1,36 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% block page_title %}{% endblock %} - GITHUB
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand header-size" href="/">Github <span><img src="/static/logo.png" class="logo-size"></span></a>
+            </div>
+            <ul class="nav navbar-nav float-right">
+                <li><a href="/">Home</a></li>
+                <li><a href = "/login" target = "">Login Page</a></li>
+                <li><a href="/signup" target="">Signup Page</a></li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% block page_content %}{% endblock %}
+    </div>
+
+    <hr>
+    <div>
+        <p class="panel-footer footer-text"> Nice<a href="#" class="float-right">Back to Top</a></p>
+    </div>
+{% endblock %}

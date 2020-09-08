@@ -1,6 +1,5 @@
 import sqlite3
 from flask import g
-import os
 
 DATABASE = 'login.db'
 
@@ -17,6 +16,7 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 def establishConnection(func):
+    #saves code repetition so i don't have to write conn = ... cur = ... everytime
     def connection(*args, **kwargs):
         conn = sqlite3.connect(DATABASE)
         try:
@@ -26,7 +26,7 @@ def establishConnection(func):
             conn.rollback()
             raise e
         else:
-            if rv == None: #if you don't return anything i.e. not a select
+            if rv == None: #if you don't return anything i.e. not a SELECT keyword
                 conn.commit()
         finally:
             conn.close()
@@ -36,7 +36,7 @@ def establishConnection(func):
     return connection
 
 @establishConnection
-def createTable():
+def createTable(cur):
     cur.execute('''CREATE TABLE user
                 (id INTEGER not null primary key autoincrement,
                 username TEXT NOT NULL UNIQUE,

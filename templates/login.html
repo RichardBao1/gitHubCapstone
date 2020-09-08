@@ -1,0 +1,44 @@
+{%  extends 'base.html' %}
+
+{%  block page_title %} Home {%  endblock %}
+
+{%  block page_content %}
+    {%  block log_in_fail %} {%  endblock %}
+    <h2> Login</h2>
+    <hr>
+    <form action="" method="post" id="form" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}
+            {{ form.username(size=40, placeholder = 'hello')}}
+        </p>
+        <p class="error_p">
+            <ul>
+                {% for error in form.username.errors %}
+                    <li style="color:red;" class="error">{{error}}</li>
+                {% endfor %}
+            </ul>
+        </p>
+
+        <p>
+            {{ form.password.label }}
+            {{ form.password(size=40, placeholder = 'hello')}}
+        </p>
+        <p class="error_p">
+            <ul>
+                {% for error in form.password.errors %}
+                    <li style="color:red;" class="error">{{error}}</li>
+                {% endfor %}
+            </ul>
+        </p>
+
+        <p>
+            {{ form.remember()}}
+        </p>
+
+        <p>
+            {{ form.submit()}}
+        </p>
+
+    </form>
+{%  endblock %}
