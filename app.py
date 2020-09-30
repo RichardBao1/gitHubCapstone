@@ -5,11 +5,24 @@ from flask import Flask, render_template, request, url_for,redirect
 from flask_bootstrap import Bootstrap
 from forms import LoginForm, SignUpForm
 from data_processing import *
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 
 
 app = Flask(__name__)
 app.secret_key="github1203"
 bootstrap = Bootstrap(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    def __init__(self):
+        super().__init__(is_authenticated, is_active, is_anonymous, get_id())
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def hello_world():
@@ -44,13 +57,17 @@ def signup_page():
             return 'nice'
     return render_template('signUp.html', form=form)
 
+
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+    #TODO: setup a nice dashboard
 
-@app.route('/signedUp')
-def signedUp():
-    return render_template('signedUp.html')
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for())
 
 if __name__ == '__main__':
     app.run(debug=True)
