@@ -7,23 +7,6 @@ salt = b'\xfa#\xb3\xd5\x1ac\xa4\xce2\x8f\xdf*\xfb\xc6\x8f\x99\x18\\{\xce-\xd0\xb
 
 DATABASE = 'login.db'
 
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-def getHash(password):
-    #return pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-    #return str(hash(password))
-    return password
-
 def establishConnection(func):
     #saves code repetition so i don't have to write conn = ... cur = ... everytime
     def connection(*args, **kwargs):
@@ -43,6 +26,27 @@ def establishConnection(func):
         if rv != None:
             return rv
     return connection
+
+
+
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+def getHash(password):
+    #return pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    #return str(hash(password))
+    return password
+
 
 @establishConnection
 def createTable(cur):
@@ -79,9 +83,15 @@ def updatePassword(cur, userId, newPassword):
     cur.execute("UPDATE user SET password=? WHERE id=?", (password, userId))
 
 @establishConnection
+def getUsername(cur, userId):
+    cur.execute("SELECT username FROM user WHERE id=?", (userId,))
+    return cur.fetchone()[0]
+
+@establishConnection
 def getUserId(cur, username):
     cur.execute("SELECT id FROM user WHERE username=?", (username,))
-    return cur.fetchone()[0]
+    val = cur.fetchone()
+    return val[0] if val else None
 
 @establishConnection
 def checkPassword(cur, username, password):

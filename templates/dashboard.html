@@ -2,5 +2,15 @@
 
 {%  block page_title %} Dashboard {%  endblock %}
 {% block page_content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {%  endwith %}
+
     <p>Dashboard</p>
+    <p>Welcome to your dashboard</p>
+    <li><a href="{{url_for('logout')}}">Log Out</a></li>
 {%  endblock %}

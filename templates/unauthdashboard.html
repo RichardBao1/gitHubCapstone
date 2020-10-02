@@ -1,6 +1,6 @@
-{%  extends 'base.html' %}
+{% extends 'base.html' %}
 
-{%  block page_title %} Home {%  endblock %}
+{%  block page_title %} Dashboard {%  endblock %}
 
 {%  block page_content %}
     {% with messages = get_flashed_messages() %}
@@ -10,13 +10,12 @@
             {% endfor %}
         {% endif %}
     {%  endwith %}
-    <h2> Login</h2>
-    <hr>
+
     <form action="" method="post" id="form" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}
-            {{ form.username(size=40, placeholder = 'Ni Hao ma')}}
+            {{ form.username(size=40, placeholder = 'Enter Your GITHUB Username')}}
         </p>
         <p class="error_p">
             <ul>
@@ -27,24 +26,10 @@
         </p>
 
         <p>
-            {{ form.password.label }}
-            {{ form.password(size=40, placeholder = 'hello')}}
-        </p>
-        <p class="error_p">
-            <ul>
-                {% for error in form.password.errors %}
-                    <li style="color:red;" class="error">{{error}}</li>
-                {% endfor %}
-            </ul>
-        </p>
-
-        <p>
-            {{ form.remember()}}
-        </p>
-
-        <p>
             {{ form.submit()}}
         </p>
 
     </form>
-{%  endblock %}
+
+    <li><a href="{{url_for('logout')}}">Log Out</a></li>
+{% endblock %}

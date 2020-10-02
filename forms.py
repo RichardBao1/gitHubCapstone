@@ -16,3 +16,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField('remember me')
     submit = SubmitField('OK')
 
+class AuthGitUserForm(FlaskForm):
+    username = StringField('username', validators = [InputRequired()])
+    submit = SubmitField('OK')
+
